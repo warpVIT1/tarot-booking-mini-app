@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+
+    <!-- ДОБАВЬТЕ ЭТО В СЕКЦИЮ <head> index.html ПЕРЕД ЗАКРЫВАЮЩИМ </head> -->
+
+    <script>
+        // ПРИНУДИТЕЛЬНАЯ ОЧИСТКА ЗАГРУЗОЧНОГО ЭКРАНА
+        document.addEventListener('DOMContentLoaded', function() {
+        // Принудительно убираем загрузочный экран через 4 секунды
+        setTimeout(function() {
+         const loadingScreen = document.getElementById('loading-screen');
+         const mainApp = document.getElementById('main-app');
+
+         if (loadingScreen && loadingScreen.classList.contains('active')) {
+               loadingScreen.classList.remove('active');
+               if (mainApp) {
+                  mainApp.classList.add('active');
+               }
+         }
+     }, 4000);
+     });
+
+        // Дополнительная проверка через 6 секунд
+        setTimeout(function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            const mainApp = document.getElementById('main-app');
+
+            if (loadingScreen && loadingScreen.style.display !== 'none') {
+                console.log('🔧 Экстренное скрытие загрузочного экрана');
+                loadingScreen.style.display = 'none';
+
+                if (mainApp) {
+                    mainApp.style.display = 'block';
+                    mainApp.classList.add('active');
+                }
+            }
+        }, 6000); // 6 секунд
+    });
+
+    // Функция для мгновенного скрытия загрузочного экрана (для отладки)
+    function skipLoading() {
+        const loadingScreen = document.getElementById('loading-screen');
+        const mainApp = document.getElementById('main-app');
+
+        if (loadingScreen) {
+            loadingScreen.classList.remove('active');
+            loadingScreen.style.display = 'none';
+        }
+
+        if (mainApp) {
+            mainApp.classList.add('active');
+            mainApp.style.display = 'block';
+        }
+
+        console.log('⚡ Загрузочный экран пропущен вручную');
+    }
+
+    // Кнопка для пропуска (только для отладки)
+    console.log('🔧 Для пропуска загрузки выполните: skipLoading()');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запись к тарологу</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Загрузочный экран -->
+    <div id="loading-screen" class="screen active">
+        <div class="loading-container">
+            <div class="app-logo">🔮</div>
+            <h1>Запись к тарологу</h1>
+            <p>Загрузка...</p>
+        </div>
+    </div>
+
+    <!-- Основное приложение -->
+    <div id="main-app" class="screen">
+        <!-- Шапка -->
+        <div class="app-header">
+            <div class="user-info">
+                <div class="avatar" id="user-avatar">👤</div>
+                <div class="user-details">
+                    <h3 id="user-name">Загрузка...</h3>
+                    <p id="user-contact">Клиент</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn theme-toggle" onclick="toggleTheme()">🌙</button>
+            </div>
+        </div>
+
+        <!-- Контент -->
+        <div class="content">
+            <!-- Вкладка: Доступное время -->
+            <div id="booking-tab" class="tab-content active">
+                <div class="section-header">
+                    <h2>🔮 Выберите время консультации</h2>
+                    <p>Доступные временные слоты от наших тарологов</p>
+                </div>
+
+                <div id="available-slots" class="slots-grid">
+                    <!-- Слоты загружаются динамически -->
+                </div>
+
+                <!-- Форма записи -->
+                <div id="booking-form" class="booking-form" style="display: none;">
+                    <!-- Форма появляется после выбора слота -->
+                </div>
+            </div>
+
+            <!-- Вкладка: Мои записи -->
+            <div id="bookings-tab" class="tab-content">
+                <div class="section-header">
+                    <h2>📅 Мои записи</h2>
+                    <p>История и активные записи на консультации</p>
+                </div>
+
+                <div id="user-bookings" class="bookings-list">
+                    <!-- Записи пользователя -->
+                </div>
+            </div>
+
+            <!-- Вкладка: Профиль -->
+            <div id="profile-tab" class="tab-content">
+                <div class="section-header">
+                    <h2>👤 Мой профиль</h2>
+                </div>
+
+                <div id="profile-content">
+                    <!-- Содержимое профиля -->
+                </div>
+            </div>
+
+            <!-- Вкладка: Рефералы -->
+            <div id="referral-tab" class="tab-content">
+                <div class="section-header">
+                    <h2>🎁 Пригласи друзей</h2>
+                    <p>Получайте бонусы за каждого приглашенного друга</p>
+                </div>
+
+                <div id="referral-content">
+                    <!-- Реферальная система -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Навигация -->
+        <div class="nav">
+            <button class="nav-btn active" data-tab="booking">
+                <span class="nav-icon">🔮</span>
+                <span class="nav-text">Записаться</span>
+            </button>
+            <button class="nav-btn" data-tab="bookings">
+                <span class="nav-icon">📅</span>
+                <span class="nav-text">Мои записи</span>
+            </button>
+            <button class="nav-btn" data-tab="profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Профиль</span>
+            </button>
+            <button class="nav-btn" data-tab="referral">
+                <span class="nav-icon">🎁</span>
+                <span class="nav-text">Рефералы</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="modal-overlay" class="modal-overlay">
+        <!-- Модальные окна создаются динамически -->
+    </div>
+
+    <!-- Уведомления -->
+    <div id="notifications" class="notifications-container">
+        <!-- Уведомления создаются динамически -->
+    </div>
+
+    <!-- JavaScript модули -->
+    <script src="js/config.js"></script>
+    <script src="js/telegram.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/booking.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/referral.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Инициализация клиентского приложения
+        document.addEventListener('DOMContentLoaded', () => {
+            // Форсируем роль клиента
+            CONFIG.FORCE_ROLE = CONFIG.USER_ROLES.CLIENT;
+
+            // Запускаем приложение
+            App.init();
+        });
+
+        // Переключение темы
+        function toggleTheme() {
+    const body = document.body;
+    const isDark = body.classList.contains('dark-theme');
+
+            if (isDark) {
+                body.classList.remove('dark-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            }
+
+            // Haptic feedback если доступен
+            if (typeof TelegramApp !== 'undefined') {
+                TelegramApp.hapticFeedback('selection');
+            }
+        }
+
+        // Применяем сохраненную тему при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+            }
+        });
+    </script>
+</body>
+</html>

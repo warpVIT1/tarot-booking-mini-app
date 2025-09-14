@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель таролога</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Загрузочный экран -->
+    <div id="loading-screen" class="screen active">
+        <div class="loading-container">
+            <div class="app-logo">🔮</div>
+            <h1>Панель таролога</h1>
+            <p>Загрузка...</p>
+        </div>
+    </div>
+
+    <!-- Основное приложение -->
+    <div id="main-app" class="screen">
+        <!-- Шапка -->
+        <div class="app-header">
+            <div class="user-info">
+                <div class="avatar" id="user-avatar">🔮</div>
+                <div class="user-details">
+                    <h3 id="user-name">Загрузка...</h3>
+                    <p id="user-contact">Таролог</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="toggleTheme()">🌙</button>
+            </div>
+        </div>
+
+        <!-- Контент -->
+        <div class="content">
+            <!-- Вкладка: Записи клиентов -->
+            <div id="bookings-tab" class="tab-content active">
+                <div class="section-header">
+                    <h2>👥 Записи клиентов</h2>
+                    <p>Управление записями и подтверждение консультаций</p>
+                </div>
+
+                <!-- Статистика -->
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="pending-count">0</div>
+                            <div class="stat-label">Ожидают</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="confirmed-count">0</div>
+                            <div class="stat-label">Подтверждено</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="completed-count">0</div>
+                            <div class="stat-label">Завершено</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Список записей -->
+                <div id="admin-bookings" class="bookings-list">
+                    <!-- Записи загружаются динамически -->
+                </div>
+            </div>
+
+            <!-- Вкладка: Управление временем -->
+            <div id="schedule-tab" class="tab-content">
+                <div class="section-header">
+                    <h2>⏰ Управление расписанием</h2>
+                    <p>Добавляйте и управляйте доступным временем</p>
+                </div>
+
+                <div id="time-management">
+                    <!-- Управление временем загружается динамически -->
+                </div>
+            </div>
+
+            <!-- Вкладка: Профиль -->
+            <div id="profile-tab" class="tab-content">
+                <div class="section-header">
+                    <h2>👤 Мой профиль</h2>
+                </div>
+
+                <div id="profile-content">
+                    <!-- Содержимое профиля -->
+                </div>
+            </div>
+
+            <!-- Вкладка: Рефералы -->
+            <div id="referral-tab" class="tab-content">
+                <div class="section-header">
+                    <h2>🎁 Пригласи коллег</h2>
+                    <p>Получайте бонусы за каждого приглашенного таролога</p>
+                </div>
+
+                <div id="referral-content">
+                    <!-- Реферальная система -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Навигация -->
+        <div class="nav">
+            <button class="nav-btn active" data-tab="bookings">
+                <span class="nav-icon">👥</span>
+                <span class="nav-text">Записи</span>
+            </button>
+            <button class="nav-btn" data-tab="schedule">
+                <span class="nav-icon">⏰</span>
+                <span class="nav-text">Расписание</span>
+            </button>
+            <button class="nav-btn" data-tab="profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Профиль</span>
+            </button>
+            <button class="nav-btn" data-tab="referral">
+                <span class="nav-icon">🎁</span>
+                <span class="nav-text">Рефералы</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="modal-overlay" class="modal-overlay">
+        <!-- Модальные окна создаются динамически -->
+    </div>
+
+    <!-- Уведомления -->
+    <div id="notifications" class="notifications-container">
+        <!-- Уведомления создаются динамически -->
+    </div>
+
+    <!-- JavaScript модули -->
+    <script src="js/config.js"></script>
+    <script src="js/telegram.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/referral.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Инициализация панели таролога
+        document.addEventListener('DOMContentLoaded', () => {
+    // Форсируем роль таролога
+        CONFIG.FORCE_ROLE = CONFIG.USER_ROLES.TAROT;
+        App.init();
+     });
+
+        // Переключение темы
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            TelegramApp.hapticFeedback('selection');
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            if (typeof AdminPanel !== 'undefined') {
+                const stats = AdminPanel.getStatistics();
+                document.getElementById('pending-count').textContent = stats.pendingBookings;
+                document.getElementById('confirmed-count').textContent = stats.confirmedBookings;
+                document.getElementById('completed-count').textContent = stats.completedBookings;
+            }
+        }
+
+        // Обновляем статистику каждые 30 секунд
+        setInterval(updateStats, 30000);
+    </script>
+</body>
+</html>
